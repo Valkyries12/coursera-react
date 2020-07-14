@@ -9,30 +9,50 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../shared/baseUrl";
+import { Loading } from "./LoadingComponent";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
-function RenderLeader({leader}) {
-        
+function RenderLeader({leader, isLoading, errMess}) {
+      if (isLoading) {
+        return(
+          <Loading />
+        );
+      }
+      else if (errMess) {
+        return(
+          <h4>{errMess}</h4>
+        );
+      }
+      else
         return (
-          <div key={leader.id} className="col-12 mt-5">
+          <FadeTransform in
+              transformProps={{
+                exitTransform: "scale(0.5) translateY(-50%)"
+              }}>
             
-            <Media tag="li">
-              <Media left middle>
-                  <Media object src={baseUrl + leader.image} alt={leader.name} />
+            <div key={leader.id} className="col-12 mt-5">
+              
+              <Media tag="li">
+                <Media left middle>
+                    <Media object src={baseUrl + leader.image} alt={leader.name} />
+                </Media>
+                <Media body className="ml-5">
+                  <Media heading>{leader.name}</Media>
+                  <p>{leader.description}</p>
+                </Media>
               </Media>
-              <Media body className="ml-5">
-                <Media heading>{leader.name}</Media>
-                <p>{leader.description}</p>
-              </Media>
-            </Media>
-          </div>
+            </div>
+            
+          </FadeTransform>
+          
         );
     
 }
 
 function About(props) {
-  const leaders = props.leaders.map((leader) => {
-    return <RenderLeader leader={leader}/>;
-  });
+  /*const leaders = props.leaders.map((leader) => {
+    return <RenderLeader key={leader.id} leader={leader} isLoading={props.leadersLoading} errMess={props.leadersErrMess}/>;
+  });*/
 
   return (
     <div className="container">
@@ -110,7 +130,16 @@ function About(props) {
           <h2>Corporate Leadership</h2>
         </div>
         <div className="col-12">
-          <Media list>{leaders}</Media>
+        
+          <Media list>
+            <Stagger in>{props.leaders.map((leader) => {
+              return <Fade in> 
+                        <RenderLeader key={leader.id} leader={leader} isLoading={props.leadersLoading} errMess={props.leadersErrMess}/>
+                      </Fade>;
+            })}
+            </Stagger>
+          </Media>
+        
         </div>
       </div>
     </div>

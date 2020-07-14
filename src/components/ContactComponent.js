@@ -9,6 +9,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, Form, Errors, actions } from "react-redux-form";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
@@ -25,6 +26,7 @@ class Contact extends Component {
   }
 
   handleSubmit(values) {
+    this.props.postFeedback(values);
     console.log("Current state is: " + JSON.stringify(values));
     alert("Current state is: " + JSON.stringify(values));
     this.props.resetFeedbackForm();
@@ -32,6 +34,10 @@ class Contact extends Component {
 
   render() {
     return (
+      <FadeTransform in
+              transformProps={{
+                exitTransform: "scale(0.5) translateX(-50%)"
+              }}>
       <div className="container">
         <div className="row">
           <Breadcrumb>
@@ -267,9 +273,11 @@ class Contact extends Component {
                 </Col>
               </Row>
             </Form>
+            
           </div>
         </div>
       </div>
+      </FadeTransform>
     );
   }
 }
